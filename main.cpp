@@ -10,6 +10,7 @@ void addTask(vector<Task>& tasks, int& nextId);
 void viewTasks(const vector<Task>& tasks);
 void searchTask(const vector<Task>& tasks);
 void updateTask(vector<Task>& tasks);
+void deleteTask(vector<Task>& tasks);
 
 int main() {
     vector<Task> tasks;
@@ -50,7 +51,7 @@ int main() {
             break;
 
         case 5:
-            cout << "Delete Task - coming next." << endl;
+            deleteTask(tasks);
             break;
 
         case 6:
@@ -251,4 +252,43 @@ void updateTask(vector<Task>& tasks) {
     }
 
     cout << "Task with ID " << updateId << " not found." << endl;
+}
+
+void deleteTask(vector<Task>& tasks) {
+    int deleteId;
+
+    cout << "\n--- Delete Task ---" << endl;
+
+    if (tasks.empty()) {
+        cout << "No tasks available." << endl;
+        return;
+    }
+
+    cout << "Enter Task ID to delete: ";
+    cin >> deleteId;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Invalid input. Please enter a number." << endl;
+        return;
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (auto it = tasks.begin(); it != tasks.end(); ++it) {
+        if (it->getTaskId() == deleteId) {
+
+            cout << "Task found:" << endl;
+            it->displayTask();
+
+            tasks.erase(it);
+
+            cout << "Task deleted successfully." << endl;
+            return;
+        }
+    }
+
+    cout << "Task with ID " << deleteId << " not found." << endl;
 }
