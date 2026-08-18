@@ -11,6 +11,8 @@ void viewTasks(const vector<Task>& tasks);
 void searchTask(const vector<Task>& tasks);
 void updateTask(vector<Task>& tasks);
 void deleteTask(vector<Task>& tasks);
+void markTaskCompleted(vector<Task>& tasks);
+
 
 int main() {
     vector<Task> tasks;
@@ -55,7 +57,7 @@ int main() {
             break;
 
         case 6:
-            cout << "Mark Task Completed - coming next." << endl;
+            markTaskCompleted(tasks);
             break;
 
         case 7:
@@ -291,4 +293,45 @@ void deleteTask(vector<Task>& tasks) {
     }
 
     cout << "Task with ID " << deleteId << " not found." << endl;
+}
+
+void markTaskCompleted(vector<Task>& tasks) {
+    int taskId;
+
+    cout << "\n--- Mark Task Completed ---" << endl;
+
+    if (tasks.empty()) {
+        cout << "No tasks available." << endl;
+        return;
+    }
+
+    cout << "Enter Task ID to mark as completed: ";
+    cin >> taskId;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Invalid input. Please enter a number." << endl;
+        return;
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (Task& task : tasks) {
+        if (task.getTaskId() == taskId) {
+
+            if (task.isCompleted()) {
+                cout << "This task is already completed." << endl;
+                return;
+            }
+
+            task.setCompleted(true);
+
+            cout << "Task marked as completed successfully." << endl;
+            return;
+        }
+    }
+
+    cout << "Task with ID " << taskId << " not found." << endl;
 }
