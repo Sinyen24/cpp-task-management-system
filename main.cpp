@@ -3,6 +3,8 @@
 #include <limits>
 #include "Task.h"
 #include <algorithm>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -14,11 +16,14 @@ void updateTask(vector<Task>& tasks);
 void deleteTask(vector<Task>& tasks);
 void markTaskCompleted(vector<Task>& tasks);
 void sortTasksByPriority(vector<Task>& tasks);
+void saveTasksToFile(const vector<Task>& tasks);
+void loadTasksFromFile(vector<Task>& tasks, int& nextId);
 
 
 int main() {
     vector<Task> tasks;
     int nextId = 1;
+    loadTasksFromFile(tasks, nextId);
     int choice;
 
     do {
@@ -67,6 +72,8 @@ int main() {
             break;
 
         case 8:
+             saveTasksToFile(tasks);
+            cout << "Tasks saved successfully." << endl;
             cout << "Exiting Task Management System..." << endl;
             break;
 
@@ -354,4 +361,66 @@ void sortTasksByPriority(vector<Task>& tasks) {
 
     cout << "Tasks sorted by priority successfully." << endl;
     cout << "(High -> Medium -> Low)" << endl;
+}
+
+void saveTasksToFile(const vector<Task>& tasks) {
+    ofstream file("tasks.txt");
+
+    if (!file.is_open()) {
+        cout << "Error: Unable to save tasks." << endl;
+        return;
+    }
+
+    for (const Task& task : tasks) {
+        file << task.getTaskId() << "|"
+             << task.getTitle() << "|"
+             << task.getDescription() << "|"
+             << task.getPriority() << "|"
+             << task.isCompleted() << endl;
+    }
+
+    file.close();
+}
+
+void loadTasksFromFile(vector<Task>& tasks, int& nextId) {
+    ifstream file("tasks.txt");
+
+    if (!file.is_open()) {
+        return;
+    }
+
+    string line;
+    int highestId = 0;
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+
+        string idText;
+        string title;
+        string description;
+        string priorityText;
+        string completedText;
+
+        getline(ss, idText, '|');
+        getline(ss, title, '|');
+        getline(ss, description, '|');
+        getline(ss, priorityText, '|');
+        getline(ss, completedText);
+
+        int id = stoi(idText);
+        int priority = stoi(priorityText);
+        bool completed = stoi(completedText);
+
+        Task task(id, title, description, priority, completed);
+
+        tasks.push_back(task);
+
+        if (id > highestId) {
+            highestId = id;
+        }
+    }
+
+    nextId = highestId + 1;
+
+    file.close();
 }
