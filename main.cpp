@@ -2,6 +2,7 @@
 #include <vector>
 #include <limits>
 #include "Task.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ void searchTask(const vector<Task>& tasks);
 void updateTask(vector<Task>& tasks);
 void deleteTask(vector<Task>& tasks);
 void markTaskCompleted(vector<Task>& tasks);
+void sortTasksByPriority(vector<Task>& tasks);
 
 
 int main() {
@@ -61,7 +63,7 @@ int main() {
             break;
 
         case 7:
-            cout << "Sort by Priority - coming next." << endl;
+            sortTasksByPriority(tasks);
             break;
 
         case 8:
@@ -334,4 +336,22 @@ void markTaskCompleted(vector<Task>& tasks) {
     }
 
     cout << "Task with ID " << taskId << " not found." << endl;
+}
+
+void sortTasksByPriority(vector<Task>& tasks) {
+    cout << "\n--- Sort Tasks by Priority ---" << endl;
+
+    if (tasks.empty()) {
+        cout << "No tasks available." << endl;
+        return;
+    }
+
+    sort(tasks.begin(), tasks.end(),
+        [](const Task& a, const Task& b) {
+            return a.getPriority() > b.getPriority();
+        }
+    );
+
+    cout << "Tasks sorted by priority successfully." << endl;
+    cout << "(High -> Medium -> Low)" << endl;
 }
