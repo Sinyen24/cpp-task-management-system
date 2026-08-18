@@ -9,6 +9,7 @@ void showMenu();
 void addTask(vector<Task>& tasks, int& nextId);
 void viewTasks(const vector<Task>& tasks);
 void searchTask(const vector<Task>& tasks);
+void updateTask(vector<Task>& tasks);
 
 int main() {
     vector<Task> tasks;
@@ -45,7 +46,7 @@ int main() {
             break;
 
         case 4:
-            cout << "Update Task - coming next." << endl;
+            updateTask(tasks);
             break;
 
         case 5:
@@ -177,4 +178,77 @@ void searchTask(const vector<Task>& tasks) {
     }
 
     cout << "Task with ID " << searchId << " not found." << endl;
+}
+
+void updateTask(vector<Task>& tasks) {
+    int updateId;
+
+    cout << "\n--- Update Task ---" << endl;
+
+    if (tasks.empty()) {
+        cout << "No tasks available." << endl;
+        return;
+    }
+
+    cout << "Enter Task ID to update: ";
+    cin >> updateId;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Invalid input. Please enter a number." << endl;
+        return;
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (Task& task : tasks) {
+        if (task.getTaskId() == updateId) {
+
+            string newTitle;
+            string newDescription;
+            int newPriority;
+
+            cout << "Task found:" << endl;
+            task.displayTask();
+
+            cout << "\nEnter new title: ";
+            getline(cin, newTitle);
+
+            cout << "Enter new description: ";
+            getline(cin, newDescription);
+
+            do {
+                cout << "Enter new priority (1 = Low, 2 = Medium, 3 = High): ";
+                cin >> newPriority;
+
+                if (cin.fail()) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Invalid input. Please enter 1, 2, or 3." << endl;
+                    newPriority = 0;
+                }
+                else {
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    if (newPriority < 1 || newPriority > 3) {
+                        cout << "Priority must be between 1 and 3." << endl;
+                    }
+                }
+
+            } while (newPriority < 1 || newPriority > 3);
+
+            task.setTitle(newTitle);
+            task.setDescription(newDescription);
+            task.setPriority(newPriority);
+
+            cout << "Task updated successfully." << endl;
+
+            return;
+        }
+    }
+
+    cout << "Task with ID " << updateId << " not found." << endl;
 }
