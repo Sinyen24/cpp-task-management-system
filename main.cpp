@@ -8,6 +8,7 @@ using namespace std;
 void showMenu();
 void addTask(vector<Task>& tasks, int& nextId);
 void viewTasks(const vector<Task>& tasks);
+void searchTask(const vector<Task>& tasks);
 
 int main() {
     vector<Task> tasks;
@@ -40,7 +41,7 @@ int main() {
             break;
 
         case 3:
-            cout << "Search Task - coming next." << endl;
+            searchTask(tasks);
             break;
 
         case 4:
@@ -142,4 +143,38 @@ void viewTasks(const vector<Task>& tasks) {
     for (const Task& task : tasks) {
         task.displayTask();
     }
+}
+
+void searchTask(const vector<Task>& tasks) {
+    int searchId;
+
+    cout << "\n--- Search Task ---" << endl;
+
+    if (tasks.empty()) {
+        cout << "No tasks available." << endl;
+        return;
+    }
+
+    cout << "Enter Task ID to search: ";
+    cin >> searchId;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Invalid input. Please enter a number." << endl;
+        return;
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (const Task& task : tasks) {
+        if (task.getTaskId() == searchId) {
+            cout << "Task found:" << endl;
+            task.displayTask();
+            return;
+        }
+    }
+
+    cout << "Task with ID " << searchId << " not found." << endl;
 }
